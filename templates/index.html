@@ -1,0 +1,127 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        function PreviewImage()
+        {
+            var oFReader = new FileReader();
+                oFReader.readAsDataURL(document.getElementById("uploadImage").files[0]);
+
+            oFReader.onload = function (oFREvent)
+            {
+                document.getElementById("uploadPreview").src = oFREvent.target.result;
+            };
+        };
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <table align="center" border="0">
+        <tr>
+            <td>
+                {% comment %}
+                    Rgistration Table
+                {% endcomment %}
+
+                <form action="/savedetails/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <table align="center" border="0">
+                        <tr><th>
+                            Registration Form
+                        </th></tr>
+                        <tr><td><input type="number" placeholder="IDNO" name="t1" required></td></tr>
+                        <tr><td><input type="text" placeholder="NAME" name="t2" required></td></tr>
+                        <tr><td><input type="date" placeholder="Date of Birth" name="t3" required></td></tr>
+                        <tr><td><input type="date" placeholder="Date of Join" name="t4" required></td></tr>
+                        <tr><td>
+                            <input type="radio" name="t5" checked value="male"> Male
+                            <input type="radio" name="t5" value="female"> Female
+                        </td></tr>
+                        <tr><td><input type="number" placeholder="Contact No" name="t6" required></td></tr>
+                        <tr><td><input type="email" placeholder="Email Id" name="t7" required></td></tr>
+                        <tr><td>
+                            <select name="t8">
+                                <option>Developer</option>
+                                <option>Tester</option>
+                                <option>Designer</option>
+                                <option>Team Leader</option>
+                                <option>Manager</option>
+                            </select>
+                        </td></tr>
+                        <tr><td><input type="number" placeholder="Salary" name="t9" required></td></tr>
+                        <Tr><td>
+                            <img  id="uploadPreview"  style="width: 100px; height: 100px;" />
+                        </td></Tr>
+                        <tr><td>
+                            <input id="uploadImage" type="file" name="t10"
+                                   onchange="PreviewImage()" />
+                        </td></tr>
+                        <tr><th>
+                            <button type="submit">Register</button>
+                        </th></tr>
+                    </table>
+
+                </form>
+
+
+            </td>
+            <td>
+
+                {% comment %}
+                    View Table
+                {% endcomment %}
+
+            {% if not data %}
+                <h1> Sorry No Employee is Available </h1>
+            {% else %}
+                <table align="center" border="0">
+                    <tr bgcolor="#7fff00">
+                        <th width="100">IDNO</th>
+                        <th width="100">NAME</th>
+                        <th width="100">IMAGE</th>
+                        <th width="100"></th>
+                    </tr>
+
+                    {% for x in data %}
+
+                    <tr bgcolor="yellow">
+                        <th width="100">{{ x.idno }}</th>
+                        <th width="100">{{ x.name }}</th>
+                        <td width="100">
+                            <img src="{{ x.image.url }}" style="width: 100px; height: 100px;">
+                        </td>
+                        <th width="100">
+
+                            <form action="/showemp/" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="idno" value="{{ x.idno }}">
+                                <button type="submit">Show</button><br><br>
+                            </form>
+
+                            <button type="submit">Update</button><br><br>
+
+                            <form action="/delemp/" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="idno" value="{{ x.idno }}">
+                            <button type="submit">Delete</button>
+                            </form>
+                        </th>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+            {% endif %}
+
+
+            </td>
+        </tr>
+    </table>
+
+    <h2>{{ message }}</h2>
+
+</body>
+</html>
